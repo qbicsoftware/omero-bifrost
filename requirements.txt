@@ -1,0 +1,4 @@
+typer==0.9.0
+rich==13.5.2
+zeroc-ice==3.6.5
+omero-py==5.15.0
