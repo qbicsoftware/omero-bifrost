@@ -25,7 +25,7 @@ jobs:
         run: python setup.py sdist bdist_wheel
 
       - name: Publish to PyPI
-        if: github.repository == 'qbicpkgs/omero-bifrost'
+        if: github.repository == 'luiskuhn/omero-bifrost'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
