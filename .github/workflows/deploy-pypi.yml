@@ -1,4 +1,4 @@
-name: Publish rich-click to PyPI
+name: Publish omero-bifrost to PyPI
 on:
   release:
     types: [published]
