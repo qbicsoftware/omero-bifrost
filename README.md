@@ -1,8 +1,8 @@
 # OMERO-Bifrost
 
-Bifrost bridge for large-scale transfer of bioimage data using an OMERO server. A simplified Python CLI tool and package to transfer image data/metadata from and to an OMERO server.
+<img align="left" width="100" height="100" src="docs/images/bifrost_img.png">
 
-![omero-bifrost](docs/images/bifrost_img.png)
+Bifrost bridge for large-scale transfer of bioimage data using an OMERO server. A simplified Python CLI tool and package to transfer image data/metadata from and to an OMERO server.
 
 ### Requirements
 
