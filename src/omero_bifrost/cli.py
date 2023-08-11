@@ -314,6 +314,83 @@ def register_image_file_with_dataset_id(file_path, dataset_id, usr, pwd, host, p
         image_ids = []
     return image_ids
 
+def attach_file_to_image(file_path, image_id, usr, pwd, host, port=4064):
+    """
+    This function imports an image file to an omero server using the OMERO-py (using Bio-formats)
+    This function assumes OMERO-py (cli) is installed
+    Example:
+        register_image_file("data/test_img.nd2", 10,
+         "joe_usr", "joe_pwd", "192.168.2.2")
+    Args:
+        file_path (string): the path to the fastq file to validate
+        dataset_id (string): the ID of the omero dataset
+        usr (string): username for the OMERO server
+        pwd (string): password for the OMERO server
+        host (string): OMERO server address
+        port (int): OMERO server port
+    Returns:
+        list of strings: list of newly generated omero IDs for registered images
+                (a file can contain many images)
+    """
+
+    import subprocess
+
+    original_file_id = ""
+    file_ann_id = ""
+    image_ann_link_id = ""
+
+    # upload original file and get ID
+
+    cmd = "omero upload -s " + host + " -p " + str(port) + " -u " + usr + " -w " + pwd + " " + file_path
+    proc = subprocess.Popen(cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        shell=True,
+                        universal_newlines=True)
+    std_out, std_err = proc.communicate()
+
+    if int(proc.returncode) == 0:
+        for line in std_out.splitlines():
+            if line[:13] == "OriginalFile:":
+                original_file_id = line[13:]
+                break
+
+    # create new file annotation
+
+    cmd = "omero obj -s " + host + " -p " + str(port) + " -u " + usr + " -w " + pwd + " " + "new FileAnnotation file=OriginalFile:" + original_file_id
+
+    proc = subprocess.Popen(cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        shell=True,
+                        universal_newlines=True)
+    std_out, std_err = proc.communicate()
+
+    if int(proc.returncode) == 0:
+        for line in std_out.splitlines():
+            if line[:15] == "FileAnnotation:":
+                file_ann_id = line[15:]
+                break
+
+    # create new annotation link
+
+    cmd = "omero obj -s " + host + " -p " + str(port) + " -u " + usr + " -w " + pwd + " " + "new ImageAnnotationLink parent=Image:" + str(image_id) + " child=FileAnnotation:" + file_ann_id
+
+    proc = subprocess.Popen(cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        shell=True,
+                        universal_newlines=True)
+    std_out, std_err = proc.communicate()
+
+    if int(proc.returncode) == 0:
+        for line in std_out.splitlines():
+            if line[:20] == "ImageAnnotationLink:":
+                image_ann_link_id = line[20:]
+                break
+
+    return image_ann_link_id
+        
 
 ########################################
 #functions to register numpy arrays
@@ -486,6 +563,7 @@ def query_list_all(
     else:
         print_data_tree(conn)
 
+    conn.close()
 
 
 @query_app.command("dataset-id")
@@ -519,6 +597,9 @@ def query_dataset_id(
         print("[bold red]" + xml_str)
     else:
         print("[bold red]" + str(output_map))
+
+    conn.close()
+
 
 @push_app.command("image")
 def push_image_file(
@@ -555,6 +636,7 @@ def push_image_file(
     else:
         print("[bold red]" + str(output_map))
 
+
 @push_app.command("key-value")
 def push_key_value(
         image_id: Annotated[str, typer.Argument(help="ID of target image")],
@@ -579,4 +661,24 @@ def push_key_value(
 
     add_annotations_to_image(conn, image_id, key_value_data)
 
-    print "0"
+    conn.close()
+    print("0")
+
+@push_app.command("file-att")
+def push_file_att(
+        file_path: Annotated[str, typer.Argument(help="Path to the attachment file")],
+        image_id: Annotated[str, typer.Argument(help="ID of target image")],
+        config_file_path: Annotated[str, typer.Option("--config", "-c", help="Path to the OMERO config file")] = "./imaging_config.properties",
+        output_file_path: Annotated[str, typer.Option("--output", "-o", help="Path to output XML file")] = "./omero_bifrost_output.xml",
+        to_file: Annotated[bool, typer.Option(help="output to XML file")] = False,
+        to_xml: Annotated[bool, typer.Option(help="Print XML ouput to system console")] = False
+        ):
+    
+    import xml.etree.ElementTree as ET
+    
+    omero_username, omero_password, omero_host, omero_port = get_omero_config(config_file_path)
+
+    img_ann_id = attach_file_to_image(file_path, image_id, omero_username, omero_password, omero_host)
+
+    print("[bold blue]Img ann id: " + str(img_ann_id))
+

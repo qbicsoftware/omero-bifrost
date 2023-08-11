@@ -11,3 +11,4 @@ dependencies:
   - pip:
     - typer==0.9.0
     - rich==13.5.2
+    - omero-upload==0.4.0
