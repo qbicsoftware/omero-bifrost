@@ -1,13 +1,10 @@
 
 """Interface to the image management server
 This module contains the functionality to upload and download
-imaging data (raw and metadata) form the OMERO server (v5.4).
+imaging data (raw and metadata) form the OMERO server (v5.6).
 It requires that the following software be installed within the Python
 environment you are loading this module:
-	* OMERO.cli (https://docs.openmicroscopy.org/omero/5.4.0/users/cli/index.html)
-	* OMERO Python language bindings (https://docs.openmicroscopy.org/omero/5.4.0/developers/Python.html)
-This code is based on the following documentation:
-    https://docs.openmicroscopy.org/omero/5.4.0/developers/Python.html
+	* OMERO-py
 It contains the following functions:
     * omero_connect - connects to server
     * TODO...
