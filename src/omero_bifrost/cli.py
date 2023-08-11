@@ -390,7 +390,7 @@ def attach_file_to_image(file_path, image_id, usr, pwd, host, port=4064):
                 break
 
     return image_ann_link_id
-        
+
 
 ########################################
 #functions to register numpy arrays
@@ -647,8 +647,6 @@ def push_key_value(
         to_xml: Annotated[bool, typer.Option(help="Print XML ouput to system console")] = False
         ):
     
-    import xml.etree.ElementTree as ET
-    
     omero_username, omero_password, omero_host, omero_port = get_omero_config(config_file_path)
     conn = omero_connect(omero_username, omero_password, omero_host, str(omero_port))
 
@@ -673,8 +671,6 @@ def push_file_att(
         to_file: Annotated[bool, typer.Option(help="output to XML file")] = False,
         to_xml: Annotated[bool, typer.Option(help="Print XML ouput to system console")] = False
         ):
-    
-    import xml.etree.ElementTree as ET
     
     omero_username, omero_password, omero_host, omero_port = get_omero_config(config_file_path)
 
