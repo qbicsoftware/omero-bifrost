@@ -14,8 +14,9 @@ Bifrost bridge for large-scale transfer of bioimage data using an [OMERO server]
 - typer `0.9.0`
 - rich `13.5.2`
 - zeroc-ice `3.6.5`
-- omero-py `5.15.0`
+- omero-py `5.13.1` (downgraded from `5.15.0` given ezomero `2.1.0` requirements)
 - omero-upload `0.4.0`
+- ezomero `2.1.0`
 
 
 ### Install with PyPI
