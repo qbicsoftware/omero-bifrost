@@ -81,7 +81,6 @@ def query_dataset_id(
 
     output_map = {}
     output_map[0] = {"type": "dataset",
-                     "project": project,
                      "name": dataset,
                      "id": str(ds_id)}
 
@@ -183,7 +182,7 @@ def push_image_file(
 
     for id_i in img_ids:
         output_map[output_count] = {"type": "image",
-                                    "path": file_path,
+                                    "name": file_path,
                                     "id": str(id_i)}
         output_count += 1
 
@@ -218,7 +217,7 @@ def push_image_folder(
 
     for id_i in img_ids:
         output_map[output_count] = {"type": "image",
-                                    "path": folder_path,
+                                    "name": folder_path,
                                     "id": str(id_i)}
         output_count += 1
 
